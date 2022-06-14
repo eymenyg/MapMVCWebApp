@@ -27,6 +27,24 @@ namespace MapMVCWebApp.Controllers
                           Problem("Entity set 'ApplicationDbContext.LocationModel'  is null.");
         }
 
+        // GET: LocationModels/Search
+        public async Task<IActionResult> Search()
+        {
+            return _context.LocationModel != null ?
+                        View() :
+                        Problem("Entity set 'ApplicationDbContext.LocationModel'  is null.");
+        }
+
+        // GET: LocationModels/ShowSearchResults
+        public async Task<IActionResult> ShowSearchResults(String SearchQuery)
+        {
+            return _context.LocationModel != null ?
+                        View("Index", await _context.LocationModel.
+                        Where(j => j.Title.Contains(SearchQuery)).ToListAsync()) :
+                        Problem("Entity set 'ApplicationDbContext.LocationModel'  is null.");
+
+        }
+
         // GET: LocationModels/Details/5
         public async Task<IActionResult> Details(int? id)
         {
