@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MapMVCWebApp.Data;
 using MapMVCWebApp.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MapMVCWebApp.Controllers
 {
@@ -20,6 +21,7 @@ namespace MapMVCWebApp.Controllers
         }
 
         // GET: LocationModels
+        [Authorize]
         public async Task<IActionResult> Index()
         {
               return _context.LocationModel != null ? 
@@ -28,6 +30,7 @@ namespace MapMVCWebApp.Controllers
         }
 
         // GET: LocationModels/Search
+        [Authorize]
         public async Task<IActionResult> Search()
         {
             return _context.LocationModel != null ?
@@ -64,6 +67,7 @@ namespace MapMVCWebApp.Controllers
         }
 
         // GET: LocationModels/Create
+        [Authorize]
         public IActionResult Create()
         {
             return View();
