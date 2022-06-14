@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using MapMVCWebApp.Models;
 
 namespace MapMVCWebApp.Data
 {
@@ -9,5 +10,6 @@ namespace MapMVCWebApp.Data
             : base(options)
         {
         }
+        public DbSet<MapMVCWebApp.Models.LocationModel>? LocationModel { get; set; }
     }
 }
