@@ -3,6 +3,36 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Logged in</p>
+    <p>Put a pin on the map to save into the database.</p>
+
 </div>
+<body>
+    <script type='text/javascript'>
+    function GetMap() {
+        var map = new Microsoft.Maps.Map('#myMap', {
+            credentials: 'Al38oqMXT8vMcLYoKgrlbjR2_EJ4hzSdg3KU8EW63K4ea_ANRopnOPVl_HdBZTci',
+            center: new Microsoft.Maps.Location(39.9092, 32.7539),
+            showSearchBar: true,
+            zoom: 12
+        });
+
+        var center = map.getCenter();
+
+        //Create custom Pushpin
+        var pin = new Microsoft.Maps.Pushpin(center, { draggable: true });
+
+        //Add the pushpin to the map
+        map.entities.push(pin);
+
+        var Events = Microsoft.Maps.Events;
+        Events.addHandler(pin, 'dragstart', function() { console.log("start lat: " + pin.geometry.y.toFixed(4) + " start lon: " + pin.geometry.x.toFixed(4)); });
+        Events.addHandler(pin, 'dragend', function() { console.log("end lat: " + pin.geometry.y.toFixed(4) + " end lon: " + pin.geometry.x.toFixed(4)); });
+    }
+    </script>
+    <script type='text/javascript' src='http://www.bing.com/api/maps/mapcontrol?callback=GetMap' async defer></script>
+    <center>
+        <div id="myMap" style="position:relative;width:700px;height:500px;"></div>
+        <div></div>
+        <div><input type="submit" value="Save" class="btn btn-primary" /></div>
+    </center>
+</body>
