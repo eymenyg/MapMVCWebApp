@@ -22,30 +22,18 @@ namespace MapMVCWebApp.Controllers
 
         // GET: LocationModels
         [Authorize]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchQuery)
         {
+            if(!String.IsNullOrEmpty(searchQuery))
+            {
+                return _context.LocationModel != null ?
+                        View(await _context.LocationModel.
+                        Where(j => j.Title.Contains(searchQuery)).ToListAsync()) :
+                        Problem("Entity set 'ApplicationDbContext.LocationModel'  is null.");
+            }
               return _context.LocationModel != null ? 
                           View(await _context.LocationModel.ToListAsync()) :
                           Problem("Entity set 'ApplicationDbContext.LocationModel'  is null.");
-        }
-
-        // GET: LocationModels/Search
-        [Authorize]
-        public async Task<IActionResult> Search()
-        {
-            return _context.LocationModel != null ?
-                        View() :
-                        Problem("Entity set 'ApplicationDbContext.LocationModel'  is null.");
-        }
-
-        // GET: LocationModels/ShowSearchResults
-        public async Task<IActionResult> ShowSearchResults(String SearchQuery)
-        {
-            return _context.LocationModel != null ?
-                        View("Index", await _context.LocationModel.
-                        Where(j => j.Title.Contains(SearchQuery)).ToListAsync()) :
-                        Problem("Entity set 'ApplicationDbContext.LocationModel'  is null.");
-
         }
 
         // GET: LocationModels/Details/5
