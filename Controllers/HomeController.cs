@@ -20,11 +20,6 @@ namespace MapMVCWebApp.Controllers
             return View(User.Identity.IsAuthenticated ? "Index" : "LoginIndex");
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
