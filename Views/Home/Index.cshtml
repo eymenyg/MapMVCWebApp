@@ -25,14 +25,45 @@
         map.entities.push(pin);
 
         var Events = Microsoft.Maps.Events;
-        Events.addHandler(pin, 'dragstart', function() { console.log("start lat: " + pin.geometry.y.toFixed(4) + " start lon: " + pin.geometry.x.toFixed(4)); });
-        Events.addHandler(pin, 'dragend', function() { console.log("end lat: " + pin.geometry.y.toFixed(4) + " end lon: " + pin.geometry.x.toFixed(4)); });
+        //Events.addHandler(pin, 'dragstart', function() { console.log("start lat: " + pin.geometry.y.toFixed(4) + " start lon: " + pin.geometry.x.toFixed(4)); });
+        //Events.addHandler(pin, 'dragend', function() { console.log("end lat: " + pin.geometry.y.toFixed(4) + " end lon: " + pin.geometry.x.toFixed(4)); });
+        Events.addHandler(pin, 'dragend', function() { document.getElementById("latitude").value = pin.geometry.y.toFixed(7); document.getElementById("longitude").value = pin.geometry.x.toFixed(7); });
     }
     </script>
     <script type='text/javascript' src='http://www.bing.com/api/maps/mapcontrol?callback=GetMap' async defer></script>
     <center>
         <div id="myMap" style="position:relative;width:700px;height:500px;"></div>
         <div></div>
-        <div><input type="submit" value="Save" class="btn btn-primary" /></div>
+        
+        <tr class="form-group">
+            @using (Html.BeginForm())
+            {
+                <table align="center">
+                    <tr>
+                        <td align="left">
+                            @Html.Label("Title")
+                            @Html.TextBox("loctitle")
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="left">
+                            @Html.Label("Latitude")
+                            @Html.TextBox("latitude")
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="left">
+                            @Html.Label("Longitude")
+                            @Html.TextBox("longitude")
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center">
+                            <div><input type="submit" value="Save" class="btn btn-primary" /></div>
+                        </td>
+                    </tr>
+                </table>
+            }
+        </tr>
     </center>
 </body>
