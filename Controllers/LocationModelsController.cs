@@ -73,9 +73,9 @@ namespace MapMVCWebApp.Controllers
             {
                 _context.Add(locationModel);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return Json("success");
             }
-            return View(locationModel);
+            return Json("error");
         }
 
         // GET: LocationModels/Edit/5
