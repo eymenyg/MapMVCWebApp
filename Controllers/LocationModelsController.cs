@@ -36,24 +36,6 @@ namespace MapMVCWebApp.Controllers
                           Problem("Entity set 'ApplicationDbContext.LocationModel'  is null.");
         }
 
-        // GET: LocationModels/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || _context.LocationModel == null)
-            {
-                return NotFound();
-            }
-
-            var locationModel = await _context.LocationModel
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (locationModel == null)
-            {
-                return NotFound();
-            }
-
-            return View(locationModel);
-        }
-
         // GET: LocationModels/Create
         [Authorize]
         public IActionResult Create()
