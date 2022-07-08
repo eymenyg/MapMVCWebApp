@@ -111,24 +111,6 @@ namespace MapMVCWebApp.Controllers
             return View(locationModel);
         }
 
-        // GET: LocationModels/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null || _context.LocationModel == null)
-            {
-                return NotFound();
-            }
-
-            var locationModel = await _context.LocationModel
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (locationModel == null)
-            {
-                return NotFound();
-            }
-
-            return View(locationModel);
-        }
-
         // POST: LocationModels/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
