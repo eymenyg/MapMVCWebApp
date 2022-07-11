@@ -42,7 +42,7 @@
             </td>
                 <td>
                     <div class="btn-group">
-                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">
+                        <a onclick="showInPopup('@item.Id')" class="btn btn-warning">
                             <i class="fa-solid fa-pen"></i>
                         </a>
                         <form asp-action="Delete" asp-route-id="@item.Id">
@@ -58,3 +58,29 @@
     </tbody>
 </table>
 
+<div class="modal" tabindex="-1" role="dialog" id="form-modal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            </div>
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+    showInPopup = (itemID) => {
+        $.ajax({
+            type: "GET",
+            url: 'LocationModels/Edit/' + itemID,
+            success: function(response) {
+                $("#form-modal .modal-body").html(response);
+                $("#form-modal").modal('show');
+            }
+        });
+    }
+</script>
+}
