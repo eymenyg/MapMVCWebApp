@@ -10,29 +10,27 @@
     <center>
         <div id="map" style="position:relative;width:100%;height:500px;"></div>
 
-        <div class="col-md-12">
-            <div class="panel panel-primary">
-                <div class="panel-body">
-                    <div class="form-group col-md-5">
-                        <label>Title</label>
-                        <input type="text" name="Title" id="Title" class="form-control" placeholder="Enter location title" required="" />
-                    </div>
-                    <div class="form-group col-md-5">
-                        <label>Latitude</label>
-                        <input type="number" name="Latitude" id="Latitude" class="form-control" readonly />
-                    </div>
-                    <div class="form-group col-md-5">
-                        <label>Longitude</label>
-                        <input type="number" name="Longitude" id="Longitude" class="form-control" readonly />
-                    </div>
-
-                    <div class="form-group col-md-1">
-                        <div style="margin-top:0.5cm">
-                            <input class="btn btn-primary" name="submitButton" id="btnSave" value="Save" type="button">
-                        </div>
-                    </div>
-                </div>
-            </div>
+        @model MapMVCWebApp.Models.LocationModel
+        <div id="location-form" style="width:35%">
+            <kendo-form name="locationForm" form-data="@Model" method="POST" asp-controller="LocationModels" asp-action="Create">
+                <validatable validate-on-blur="true" />
+                <form-items>
+                    <form-item type="group">
+                        <item-label text="New Location" />
+                        <form-items>
+                            <form-item field="Title">
+                                <item-label text="Title:" />
+                            </form-item>
+                            <form-item field="Latitude">
+                                <item-label text="Latitude:" />
+                            </form-item>
+                            <form-item field="Longitude">
+                                <item-label text="Longitude:" />
+                            </form-item>
+                        </form-items>
+                    </form-item>
+                </form-items>
+            </kendo-form>
         </div>
     </center>
 </body>
@@ -43,46 +41,4 @@
     <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.14.1/build/ol.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.14.1/css/ol.css">
     <script src="/js/olMap.js"></script>
-
-    <script type="text/javascript">
-        $(function() {
-            $("#btnSave").click(function() {
-                if (document.getElementById("Title").value === "") {
-                    alert("Title cannot be empty!");
-                    return;
-                }
-                if (document.getElementById("Latitude").value === "") {
-                    alert("Please drag the pin to save the location.");
-                    return;
-                }
-                $.ajax({
-                    type: "POST",
-                    headers: {
-                        "Content-Type": "application/x-www-form-urlencoded",
-                        "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val()
-                    },
-                    url: 'LocationModels/Create',
-                    data: {
-                        Title: $("#Title").val(),
-                        Latitude: $("#Latitude").val(),
-                        Longitude: $("#Longitude").val()
-                    },
-                    dataType: "json",
-                    contentType: "application/json; charset=utf-8",
-                    success: function(result) {
-                        alert("Saved successfully.");
-                        clearBoxes();
-                    }
-                });
-                return false;
-            });
-        });
-    </script>
-    <script type="text/javascript">
-        function clearBoxes() {
-            document.getElementById("Title").value = "";
-            document.getElementById("Latitude").value = "";
-            document.getElementById("Longitude").value = "";
-        }
-    </script>
     }
