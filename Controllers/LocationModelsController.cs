@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using MapMVCWebApp.Data;
 using MapMVCWebApp.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.Text.Json;
 
 namespace MapMVCWebApp.Controllers
 {
@@ -55,9 +56,11 @@ namespace MapMVCWebApp.Controllers
             {
                 _context.Add(locationModel);
                 await _context.SaveChangesAsync();
-                return Json("success");
+                //return RedirectToAction(nameof(Index));
+                Console.WriteLine(JsonSerializer.Serialize(locationModel));
+                return Json(locationModel);
             }
-            return Json("error");
+            return Json("oops");
         }
 
         // GET: LocationModels/Edit/5
@@ -128,6 +131,25 @@ namespace MapMVCWebApp.Controllers
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        // GET: LocationModels/Details/5
+        [Authorize]
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null || _context.LocationModel == null)
+            {
+                return NotFound();
+            }
+
+            var locationModel = await _context.LocationModel
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (locationModel == null)
+            {
+                return NotFound();
+            }
+
+            return Json(JsonSerializer.Serialize(locationModel));
         }
 
         private bool LocationModelExists(int id)
