@@ -11,7 +11,8 @@
 
         @model MapMVCWebApp.Models.LocationModel
         <div id="location-form" class="flex-child form">
-            <kendo-form name="locationForm" form-data="@Model" method="POST" asp-controller="LocationModels" asp-action="Create">
+            <kendo-form name="locationForm" form-data="@Model" method="POST" asp-controller="LocationModels" asp-action="Create"
+            on-submit="onFormSubmit">
                 <validatable validate-on-blur="true" />
                 <form-items>
                     <form-item type="group">
@@ -47,6 +48,21 @@
                 margin-right: 15px;
             }
     </style>
+
+    <div id="success-dialog">
+        <kendo-dialog name="successDialog" title="Saved Successfully!" width="400" modal="true" visible="false">
+        <actions>            
+            <action text="See all" action="onSeeAll">
+            </action>
+            <action text="OK" primary="true" action="onOK">
+            </action>
+        </actions>
+        <content>
+            <p>New location was saved successfully.</p>
+        </content>
+    </kendo-dialog>
+    </div>
+
 </body>
 
 
@@ -55,4 +71,42 @@
     <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.14.1/build/ol.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.14.1/css/ol.css">
     <script src="/js/olMap.js"></script>
+
+    <script type="text/javascript">
+        function onFormSubmit(e) {
+            e.preventDefault();
+
+            $.ajax({
+                type: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val()
+                },
+                url: 'LocationModels/Create',
+                data: {
+                    Title: $("#Title").val(),
+                    Latitude: $("#Latitude").val(),
+                    Longitude: $("#Longitude").val()
+                },
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: showDialog()
+            });
+        }
+    </script>
+
+    <script>
+
+        function onSeeAll() {
+            location.href = '/LocationModels';
+        }
+
+        function onOK() {
+            location.reload();
+        }
+
+        function showDialog() {
+            $('#successDialog').data("kendoDialog").open();
+        }
+    </script>
     }
