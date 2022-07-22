@@ -9,9 +9,9 @@
     <div class="flex-container">
         <div id="map" style="position:relative;height:500px;" class="flex-child map"></div>
 
-        @model MapMVCWebApp.Models.LocationModel
+        @model MapMVCWebApp.Models.Location
         <div id="location-form" class="flex-child form">
-            <kendo-form name="locationForm" form-data="@Model" method="POST" asp-controller="LocationModels" asp-action="Create"
+            <kendo-form name="locationForm" form-data="@Model" method="POST" asp-controller="Locations" asp-action="Create"
             on-submit="onFormSubmit">
                 <validatable validate-on-blur="true" />
                 <form-items>
@@ -82,7 +82,7 @@
                     "Content-Type": "application/x-www-form-urlencoded",
                     "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val()
                 },
-                url: 'LocationModels/Create',
+                url: 'Locations/Create',
                 data: {
                     Title: $("#Title").val(),
                     Latitude: $("#Latitude").val(),
@@ -98,7 +98,7 @@
     <script>
 
         function onSeeAll() {
-            location.href = '/LocationModels';
+            location.href = '/Locations';
         }
 
         function onOK() {

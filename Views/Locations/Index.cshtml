@@ -1,4 +1,4 @@
-﻿@model IEnumerable<MapMVCWebApp.Models.LocationModel>
+﻿@model IEnumerable<MapMVCWebApp.Models.Location>
 
 @{
     ViewData["Title"] = "Saved Locations";
@@ -6,7 +6,7 @@
 
 <h1>Saved Locations</h1>
 
-<form asp-controller="LocationModels" asp-action="Index" method="get">
+<form asp-controller="Locations" asp-action="Index" method="get">
     <p>
         Title: <input type="text" name="searchQuery" />
         <input type="submit" value="Filter" />
@@ -75,7 +75,7 @@
     showInPopup = (itemID) => {
         $.ajax({
             type: "GET",
-            url: 'LocationModels/Edit/' + itemID,
+            url: 'Locations/Edit/' + itemID,
             success: function(response) {
                 $("#form-modal .modal-body").html(response);
                 $("#form-modal").modal('show');

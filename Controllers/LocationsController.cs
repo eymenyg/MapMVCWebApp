@@ -12,79 +12,79 @@ using System.Text.Json;
 
 namespace MapMVCWebApp.Controllers
 {
-    public class LocationModelsController : Controller
+    public class LocationsController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public LocationModelsController(ApplicationDbContext context)
+        public LocationsController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: LocationModels
+        // GET: Locations
         [Authorize]
         public async Task<IActionResult> Index(string searchQuery)
         {
             if(!String.IsNullOrEmpty(searchQuery))
             {
-                return _context.LocationModel != null ?
-                        View(await _context.LocationModel.
+                return _context.Location != null ?
+                        View(await _context.Location.
                         Where(j => j.Title.Contains(searchQuery)).ToListAsync()) :
-                        Problem("Entity set 'ApplicationDbContext.LocationModel'  is null.");
+                        Problem("Entity set 'ApplicationDbContext.Location'  is null.");
             }
-              return _context.LocationModel != null ? 
-                          View(await _context.LocationModel.ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.LocationModel'  is null.");
+              return _context.Location != null ? 
+                          View(await _context.Location.ToListAsync()) :
+                          Problem("Entity set 'ApplicationDbContext.Location'  is null.");
         }
 
-        // GET: LocationModels/Create
+        // GET: Locations/Create
         [Authorize]
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: LocationModels/Create
+        // POST: Locations/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Latitude,Longitude")] LocationModel locationModel)
+        public async Task<IActionResult> Create([Bind("Id,Title,Latitude,Longitude")] Location location)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(locationModel);
+                _context.Add(location);
                 await _context.SaveChangesAsync();
-                return Json(JsonSerializer.Serialize(locationModel));
+                return Json(JsonSerializer.Serialize(location));
             }
             return Json("error");
         }
 
-        // GET: LocationModels/Edit/5
+        // GET: Locations/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.LocationModel == null)
+            if (id == null || _context.Location == null)
             {
                 return NotFound();
             }
 
-            var locationModel = await _context.LocationModel.FindAsync(id);
-            if (locationModel == null)
+            var location = await _context.Location.FindAsync(id);
+            if (location == null)
             {
                 return NotFound();
             }
-            return View(locationModel);
+            return View(location);
         }
 
-        // POST: LocationModels/Edit/5
+        // POST: Locations/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Latitude,Longitude")] LocationModel locationModel)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Latitude,Longitude")] Location location)
         {
-            if (id != locationModel.Id)
+            if (id != location.Id)
             {
                 return NotFound();
             }
@@ -93,12 +93,12 @@ namespace MapMVCWebApp.Controllers
             {
                 try
                 {
-                    _context.Update(locationModel);
+                    _context.Update(location);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!LocationModelExists(locationModel.Id))
+                    if (!LocationExists(location.Id))
                     {
                         return NotFound();
                     }
@@ -109,50 +109,50 @@ namespace MapMVCWebApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(locationModel);
+            return View(location);
         }
 
-        // POST: LocationModels/Delete/5
+        // POST: Locations/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.LocationModel == null)
+            if (_context.Location == null)
             {
-                return Problem("Entity set 'ApplicationDbContext.LocationModel'  is null.");
+                return Problem("Entity set 'ApplicationDbContext.Location'  is null.");
             }
-            var locationModel = await _context.LocationModel.FindAsync(id);
-            if (locationModel != null)
+            var location = await _context.Location.FindAsync(id);
+            if (location != null)
             {
-                _context.LocationModel.Remove(locationModel);
+                _context.Location.Remove(location);
             }
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: LocationModels/Details/5
+        // GET: Locations/Details/5
         [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.LocationModel == null)
+            if (id == null || _context.Location == null)
             {
                 return NotFound();
             }
 
-            var locationModel = await _context.LocationModel
+            var location = await _context.Location
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (locationModel == null)
+            if (location == null)
             {
                 return NotFound();
             }
 
-            return Json(JsonSerializer.Serialize(locationModel));
+            return Json(JsonSerializer.Serialize(location));
         }
 
-        private bool LocationModelExists(int id)
+        private bool LocationExists(int id)
         {
-          return (_context.LocationModel?.Any(e => e.Id == id)).GetValueOrDefault();
+          return (_context.Location?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

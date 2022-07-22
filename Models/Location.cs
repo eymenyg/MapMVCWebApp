@@ -2,7 +2,7 @@
 
 namespace MapMVCWebApp.Models
 {
-    public class LocationModel
+    public class Location
     {
         [Key]
         public int Id { get; set; }
@@ -13,7 +13,7 @@ namespace MapMVCWebApp.Models
         [Required]
         public double Longitude { get; set; }
 
-        public LocationModel()
+        public Location()
         {
 
         }

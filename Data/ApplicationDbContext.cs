@@ -10,6 +10,6 @@ namespace MapMVCWebApp.Data
             : base(options)
         {
         }
-        public DbSet<MapMVCWebApp.Models.LocationModel>? LocationModel { get; set; }
+        public DbSet<MapMVCWebApp.Models.Location>? Location { get; set; }
     }
 }
