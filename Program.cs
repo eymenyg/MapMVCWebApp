@@ -7,8 +7,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add framework services.
 builder.Services
     .AddControllersWithViews();
-	// Maintain property names during serialization. See:
-	// https://github.com/aspnet/Announcements/issues/194
+// Maintain property names during serialization. See:
+// https://github.com/aspnet/Announcements/issues/194
+builder.Services.AddMvc().AddJsonOptions(options =>
+                options.JsonSerializerOptions.PropertyNamingPolicy = null);
 // Add Kendo UI services to the services container
 builder.Services.AddKendo();
 
