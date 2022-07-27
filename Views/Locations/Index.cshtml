@@ -6,81 +6,41 @@
 
 <h1>Saved Locations</h1>
 
-<form asp-controller="Locations" asp-action="Index" method="get">
-    <p>
-        Title: <input type="text" name="searchQuery" />
-        <input type="submit" value="Filter" />
-    </p>
-</form>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Latitude)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Longitude)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Latitude)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Longitude)
-            </td>
-                <td>
-                    <div class="btn-group">
-                        <a onclick="showInPopup('@item.Id')" class="btn btn-warning">
-                            <i class="fa-solid fa-pen"></i>
-                        </a>
-                        <form asp-action="Delete" asp-route-id="@item.Id">
-                            <button type="submit" class="btn btn-danger"
-                                onclick="return confirm('Are you sure you want to delete this entry?')">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
-                        </form>
-                    </div>
-                </td>
-        </tr>
-}
-    </tbody>
-</table>
-
-<div class="modal" tabindex="-1" role="dialog" id="form-modal">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-            </div>
-            <div class="modal-body">
-            </div>
-        </div>
-    </div>
-</div>
+@(Html.Kendo().Grid<MapMVCWebApp.Models.Location>()
+          .Name("grid")
+          .DataSource(dataSource => dataSource
+            .Ajax()
+            .Model(model =>
+             {
+                    model.Id(location => location.Id);
+                    model.Field(location => location.Id).Editable(false);
+                    model.Field(location => location.Title).DefaultValue("New Location");
+             })
+            .PageSize(20)
+            .ServerOperation(false)
+            .Create(create => create.Action("CreateFromList", "Locations").Data("sendAntiForgeryToken").Type(HttpVerbs.Post))
+            .Read(read => read.Action("ReadFromList", "Locations").Type(HttpVerbs.Get))
+            .Update(update => update.Action("UpdateFromList", "Locations").Data("sendAntiForgeryToken").Type(HttpVerbs.Post))
+            .Destroy(destroy => destroy.Action("DestroyFromList", "Locations").Data("sendAntiForgeryToken").Type(HttpVerbs.Post))
+          )
+          .Columns(columns =>
+          {
+              columns.Bound(location => location.Title).Width(150);
+              columns.Bound(location => location.Latitude).Width(200);
+              columns.Bound(location => location.Longitude).Width(200);
+              columns.Command(command => { command.Edit(); command.Destroy(); }).Title("Commands").Width(120);
+          })
+          .ToolBar(toolbar => toolbar.Create())
+          .Editable(editable => editable.Mode(GridEditMode.InLine))
+          .Pageable()
+          .Sortable()
+)
 
 @section Scripts
 {
-    <script type="text/javascript">
-    showInPopup = (itemID) => {
-        $.ajax({
-            type: "GET",
-            url: 'Locations/Edit/' + itemID,
-            success: function(response) {
-                $("#form-modal .modal-body").html(response);
-                $("#form-modal").modal('show');
-            }
-        });
-    }
-</script>
+    <script>
+        function sendAntiForgeryToken() {
+            return { "__RequestVerificationToken": $('input[name=__RequestVerificationToken]').val() }
+        }
+    </script>
 }

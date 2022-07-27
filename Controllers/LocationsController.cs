@@ -9,6 +9,8 @@ using MapMVCWebApp.Data;
 using MapMVCWebApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Text.Json;
+using Kendo.Mvc.UI;
+using Kendo.Mvc.Extensions;
 
 namespace MapMVCWebApp.Controllers
 {
@@ -23,23 +25,7 @@ namespace MapMVCWebApp.Controllers
 
         // GET: Locations
         [Authorize]
-        public async Task<IActionResult> Index(string searchQuery)
-        {
-            if(!String.IsNullOrEmpty(searchQuery))
-            {
-                return _context.Location != null ?
-                        View(await _context.Location.
-                        Where(j => j.Title.Contains(searchQuery)).ToListAsync()) :
-                        Problem("Entity set 'ApplicationDbContext.Location'  is null.");
-            }
-              return _context.Location != null ? 
-                          View(await _context.Location.ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.Location'  is null.");
-        }
-
-        // GET: Locations/Create
-        [Authorize]
-        public IActionResult Create()
+        public ActionResult Index()
         {
             return View();
         }
@@ -61,93 +47,89 @@ namespace MapMVCWebApp.Controllers
             return Json("error");
         }
 
-        // GET: Locations/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.Location == null)
-            {
-                return NotFound();
-            }
-
-            var location = await _context.Location.FindAsync(id);
-            if (location == null)
-            {
-                return NotFound();
-            }
-            return View(location);
-        }
-
-        // POST: Locations/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Latitude,Longitude")] Location location)
+        public async Task<IActionResult> CreateFromList([DataSourceRequest] DataSourceRequest request, Location location)
         {
-            if (id != location.Id)
-            {
-                return NotFound();
-            }
 
             if (ModelState.IsValid)
             {
-                try
+                using (var context = _context)
                 {
-                    _context.Update(location);
+                    var newLocation = new Location
+                    {
+                        Title = location.Title,
+                        Latitude = location.Latitude,
+                        Longitude = location.Longitude
+                    };
+                    _context.Add(newLocation);
+                    await _context.SaveChangesAsync();
+                    location.Id = newLocation.Id;
+                }
+                return Json(new[] { location }.ToDataSourceResult(request, ModelState));
+            }
+            return Json("error");
+            
+        }
+
+        public async Task<IActionResult> ReadFromList([DataSourceRequest] DataSourceRequest request)
+        {
+            using (var context = _context)
+            {
+                IQueryable<Location> locations = context.Location;
+                DataSourceResult result = await locations.ToDataSourceResultAsync(request);
+                return Json(result);
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateFromList([DataSourceRequest] DataSourceRequest request, Location location)
+        {
+
+            if (ModelState.IsValid)
+            {
+                using (var context = _context)
+                {
+                    var newLocation = new Location
+                    {
+                        Id = location.Id,
+                        Title = location.Title,
+                        Latitude = location.Latitude,
+                        Longitude = location.Longitude
+                    };
+
+                    context.Location.Attach(newLocation);
+                    context.Entry(newLocation).State = EntityState.Modified;
                     await _context.SaveChangesAsync();
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!LocationExists(location.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
             }
-            return View(location);
+            return Json(new[] { location }.ToDataSourceResult(request, ModelState));
         }
 
-        // POST: Locations/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DestroyFromList([DataSourceRequest] DataSourceRequest request, Location location)
         {
-            if (_context.Location == null)
+            if (ModelState.IsValid)
             {
-                return Problem("Entity set 'ApplicationDbContext.Location'  is null.");
-            }
-            var location = await _context.Location.FindAsync(id);
-            if (location != null)
-            {
-                _context.Location.Remove(location);
-            }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+                using (var context = _context)
+                {
 
-        // GET: Locations/Details/5
-        [Authorize]
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || _context.Location == null)
-            {
-                return NotFound();
+                    var newLocation = new Location
+                    {
+                        Id = location.Id,
+                        Title = location.Title,
+                        Latitude = location.Latitude,
+                        Longitude = location.Longitude
+                    };
+                    context.Location.Attach(newLocation);
+                    context.Location.Remove(newLocation);
+                    await _context.SaveChangesAsync();
+                }
             }
-
-            var location = await _context.Location
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (location == null)
-            {
-                return NotFound();
-            }
-
-            return Json(JsonSerializer.Serialize(location));
+            return Json(new[] { location }.ToDataSourceResult(request, ModelState));
         }
 
         private bool LocationExists(int id)
